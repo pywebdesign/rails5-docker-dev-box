@@ -1,0 +1,23 @@
+files:
+  image: ubuntu
+  volumes:
+    - ./vendor:/app/vendor
+    - ./dbdata:/var/lib/postgresql/data/
+
+db:  
+  image: "postgres:9.5"
+  volumes_from:
+    - files
+
+web:  
+  build: ./docker
+  command: bundle exec rails server -b 0.0.0.0
+  volumes:
+    - .:/app
+  volumes_from:
+    - files
+  ports:
+    - "3000:3000"
+  links:
+    - db
+    - files
